@@ -15,3 +15,5 @@ export const initialState: ThemeProviderState = {
   theme: "system",
   setTheme: () => null,
 };
+
+export type AiCapabilitiesTypes = "no" | "readily" | "after-download";

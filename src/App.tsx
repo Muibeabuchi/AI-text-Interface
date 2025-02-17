@@ -36,6 +36,58 @@ function App() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState("en");
 
+  async function googleAi() {
+    if ("ai" in self && "languageDetector" in self.ai) {
+      // The Language Detector API is available.
+      const languageDetectorCapabilities =
+        await self.ai.languageDetector.capabilities();
+      const canDetect = languageDetectorCapabilities.capabilities;
+
+      let detector;
+      if (canDetect === "no") {
+        // The language detector isn't usable.
+        return;
+      }
+      if (canDetect === "readily") {
+        // The language detector can immediately be used.
+        detector = await self.ai.languageDetector.create();
+      } else {
+        // The language detector can be used after model download.
+        detector = await self.ai.languageDetector.create({
+          monitor(m) {
+            m.addEventListener("downloadprogress", (e) => {
+              console.log(`Downloaded ${e.loaded} of ${e.total} bytes.`);
+            });
+          },
+        });
+        await detector.ready;
+      }
+      const detectedLanguage = await detector.detect(
+        "ta shi wo de xin tong xue"
+      );
+      // console.log(detectedLanguage);
+      const readableLanguage = languageTagToHumanReadable(
+        detectedLanguage[0].detectedLanguage,
+        "en"
+      );
+      console.log(readableLanguage);
+    } else {
+      console.log("nein");
+    }
+  }
+
+  function languageTagToHumanReadable(
+    languageTag: string,
+    targetLanguage: string
+  ) {
+    const displayNames = new Intl.DisplayNames([targetLanguage], {
+      type: "language",
+    });
+    return displayNames.of(languageTag);
+  }
+
+  googleAi();
+
   const handleSend = async () => {
     if (!inputText.trim()) return;
 
