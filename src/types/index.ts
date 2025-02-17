@@ -17,3 +17,16 @@ export const initialState: ThemeProviderState = {
 };
 
 export type AiCapabilitiesTypes = "no" | "readily" | "after-download";
+
+export type translateTypes = "en" | "pt" | "es" | "ru" | "tr" | "fr";
+
+export type Message = {
+  id: number;
+  text: string;
+  language?: string;
+  readableLanguage?: string;
+  summary?: string;
+  translation?: string;
+  isTranslating?: boolean;
+  translationError?: boolean;
+};

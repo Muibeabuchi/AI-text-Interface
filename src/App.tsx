@@ -12,14 +12,9 @@ import { Card, CardContent } from "./components/ui/card";
 import { Send, Loader2 } from "lucide-react";
 import { ThemeToggle } from "./components/toggle-theme";
 import ThemeProvider from "./components/theme-provider";
-
-type Message = {
-  id: number;
-  text: string;
-  language?: string;
-  summary?: string;
-  translation?: string;
-};
+import { UseTranslator } from "./hooks/useTranslator";
+import { Message } from "./types";
+import { useLanguageDetect } from "./hooks/UseLanguageDetect";
 
 const languages = [
   { value: "en", label: "English" },
@@ -36,84 +31,13 @@ function App() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState("en");
 
-  async function googleAi() {
-    if ("ai" in self && "languageDetector" in self.ai) {
-      // The Language Detector API is available.
-      const languageDetectorCapabilities =
-        await self.ai.languageDetector.capabilities();
-      const canDetect = languageDetectorCapabilities.capabilities;
-
-      let detector;
-      if (canDetect === "no") {
-        // The language detector isn't usable.
-        return;
-      }
-      if (canDetect === "readily") {
-        // The language detector can immediately be used.
-        detector = await self.ai.languageDetector.create();
-      } else {
-        // The language detector can be used after model download.
-        detector = await self.ai.languageDetector.create({
-          monitor(m) {
-            m.addEventListener("downloadprogress", (e) => {
-              console.log(`Downloaded ${e.loaded} of ${e.total} bytes.`);
-            });
-          },
-        });
-        await detector.ready;
-      }
-      const detectedLanguage = await detector.detect(
-        "ta shi wo de xin tong xue"
-      );
-      // console.log(detectedLanguage);
-      const readableLanguage = languageTagToHumanReadable(
-        detectedLanguage[0].detectedLanguage,
-        "en"
-      );
-      console.log(readableLanguage);
-    } else {
-      console.log("nein");
-    }
-  }
-
-  function languageTagToHumanReadable(
-    languageTag: string,
-    targetLanguage: string
-  ) {
-    const displayNames = new Intl.DisplayNames([targetLanguage], {
-      type: "language",
-    });
-    return displayNames.of(languageTag);
-  }
-
-  googleAi();
-
-  const handleSend = async () => {
-    if (!inputText.trim()) return;
-
-    setIsProcessing(true);
-    const newMessage: Message = {
-      id: Date.now(),
-      text: inputText,
-    };
-
-    setMessages((prev) => [...prev, newMessage]);
-    setInputText("");
-
-    try {
-      // Simulating API calls
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      const detectedLanguage = "en"; // Replace with actual API call
-      const updatedMessage = { ...newMessage, language: detectedLanguage };
-      setMessages((prev) =>
-        prev.map((msg) => (msg.id === newMessage.id ? updatedMessage : msg))
-      );
-    } catch (error) {
-      console.error("Error processing message:", error);
-    } finally {
-      setIsProcessing(false);
-    }
-  };
+  const { translator } = UseTranslator();
+  const { handleSend } = useLanguageDetect({
+    inputText,
+    setInputText,
+    setMessages,
+    setProcessing: setIsProcessing,
+  });
 
   const handleSummarize = async (messageId: number) => {
     setIsProcessing(true);
@@ -131,12 +55,41 @@ function App() {
     }
   };
 
+  const handleTranslationState = (messageId: number, status: boolean) => {
+    setMessages((prev) =>
+      prev.map((item) =>
+        item.id === messageId ? { ...item, isTranslating: status } : item
+      )
+    );
+  };
+  const handleTranslationError = (messageId: number, errorStatus: boolean) => {
+    setMessages((prev) =>
+      prev.map((item) =>
+        item.id === messageId ? { ...item, isTranslating: errorStatus } : item
+      )
+    );
+  };
+
   const handleTranslate = async (messageId: number) => {
-    setIsProcessing(true);
+    const message = messages.find((item) => item.id === messageId);
+    if (!message) return;
+    const textToBeTranslated = message.text;
+    const currentLanguage = message.language;
+    // console.log("text", text);
+    // console.log("messageId", messageId);
+    // setIsProcessing(true);
     try {
       // Simulating API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      const translation = "This is a translated version of the text."; // Replace with actual API call
+      // await new Promise((resolve) => setTimeout(resolve, 1000));
+      const translation = await translator({
+        targetlanguage: selectedLanguage,
+        currentLanguage,
+        textToBeTranslated,
+        handleTranslationState,
+        messageId,
+        handleTranslationError,
+      });
+      // const translation = "This is a translated version of the text."; // Replace with actual API call
       setMessages((prev) =>
         prev.map((msg) =>
           msg.id === messageId ? { ...msg, translation } : msg
@@ -145,7 +98,7 @@ function App() {
     } catch (error) {
       console.error("Error translating:", error);
     } finally {
-      setIsProcessing(false);
+      // setIsProcessing(false);
     }
   };
 
@@ -163,7 +116,7 @@ function App() {
                 <p>{message.text}</p>
                 {message.language && (
                   <p className="text-sm text-muted-foreground">
-                    Detected language: {message.language}
+                    Detected language: {message.readableLanguage}
                   </p>
                 )}
                 <div className="space-x-2">
@@ -182,12 +135,18 @@ function App() {
                     <Button
                       onClick={() => handleTranslate(message.id)}
                       variant="outline"
+                      disabled={message.isTranslating}
                       size="sm"
                     >
-                      Translate
+                      {message.isTranslating ? (
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      ) : (
+                        "Translate"
+                      )}
                     </Button>
                   )}
                 </div>
+                {/* Todo: Place an error alert somewhere here */}
                 {message.summary && (
                   <Card className="bg-muted">
                     <CardContent className="p-2 text-sm">
@@ -211,6 +170,8 @@ function App() {
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
             placeholder="Type your message here..."
+            required
+            minLength={10}
             className="flex-grow"
           />
           <Button onClick={handleSend} disabled={isProcessing}>
