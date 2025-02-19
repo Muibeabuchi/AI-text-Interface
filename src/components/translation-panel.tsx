@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import {
   ChevronDown,
   // Loader2,
   Menu,
   RotateCw,
-  Trash2,
+  Trash,
+  // Trash2,
   Type,
+  X,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "./ui/button";
@@ -26,6 +28,10 @@ import {
 import { cn, languages } from "../lib/utils";
 import { FileUpload } from "./file-upload";
 import { translateTypes } from "@/types";
+import { SubmitButton } from "./submit-button";
+import { EmptyStateIllustration } from "./empty-state-illustration";
+import { DeviceErrorIllustration } from "./error-state-illustration";
+import { Slider } from "./ui/slider";
 
 export type ModeType = "text" | "translation" | "summary";
 interface TranslationPanelProps {
@@ -37,9 +43,11 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
   const [inputText, setInputText] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [detectedLanguage, setDetectedLanguage] = useState<string | null>(null);
-  const [showFileUpload, setShowFileUpload] = useState(true);
+  // const [showFileUpload, setShowFileUpload] = useState(true);
 
   const [mode, setMode] = useState<ModeType>("text");
+
+  const showFileUpload = inputText.length > 0;
 
   const handleMode = (mode: ModeType) => setMode(mode);
 
@@ -67,7 +75,10 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
     }
   };
 
-  const wordCount = inputText.trim().split(/\s+/).length;
+  const countWords = useCallback(() => {
+    if (!inputText || typeof inputText !== "string") return 0; // Handle empty or non-string inputs
+    return inputText.trim().split(/\s+/).length;
+  }, [inputText]);
 
   return (
     <div className="space-y-4 overflow-hidden border rounded-lg animate-in fade-in-50 border-primary bg-card shadow-soft">
@@ -98,7 +109,7 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
                   role="button"
                   // onClick={() => handleMode("translation")}
                   className={cn(
-                    "flex items-center justify-between gap-2 rounded-sm py-0.5 px-5 hover-shadow text-sm hover:bg-accent/80 hover:text-primary-foreground ",
+                    "flex items-center justify-between gap-4 rounded-sm py-0.5 px-5 hover-shadow text-sm hover:bg-accent/80 hover:text-primary-foreground ",
                     {
                       "bg-accent text-primary-foreground shadow-sm":
                         mode === "translation",
@@ -114,21 +125,13 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
                 {languages.map((language) => {
                   return (
                     <DropdownMenuItem
+                      key={language.shortName}
                       onClick={() => handleTranslate(language.shortName)}
                     >
                       {language.visibleName.toUpperCase()}
                     </DropdownMenuItem>
                   );
                 })}
-                {/* <DropdownMenuItem onClick={() => handleTranslate()}>
-                  Spanish
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleTranslate()}>
-                  French
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleTranslate()}>
-                  German
-                </DropdownMenuItem> */}
               </DropdownMenuContent>
             </DropdownMenu>
 
@@ -148,7 +151,7 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
         </div>
 
         {/* OUTPUT BOX */}
-        <section className="p-4 m-0">
+        <section className="flex flex-col p-4 m-0 gap-y-3">
           <div className="relative min-h-[300px] rounded-md border border-primary bg-background">
             {loading ? (
               <div className="p-4 space-y-3">
@@ -167,7 +170,8 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
                     Detected language: {detectedLanguage}
                   </p>
                 )} */}
-                HELLO WORLD
+                {/* <DeviceErrorIllustration /> */}
+                {/* <EmptyStateIllustration /> */}
               </div>
             )}
 
@@ -189,7 +193,17 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
                       side="top"
                       className="w-48"
                     >
-                      <DropdownMenuItem onClick={() => handleTranslate()}>
+                      <DropdownMenuItem
+                        onClick={() => {
+                          setInputText("");
+                          // setShowFileUpload(true);
+                        }}
+                      >
+                        <X className="w-4 h-4 mr-2" />
+                        Clear Text
+                      </DropdownMenuItem>
+
+                      <DropdownMenuItem>
                         <RotateCw className="w-4 h-4 mr-2" />
                         Re-translate
                       </DropdownMenuItem>
@@ -197,14 +211,8 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
                         <Type className="w-4 h-4 mr-2" />
                         Summarize
                       </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={() => {
-                          setInputText("");
-                          setShowFileUpload(true);
-                        }}
-                      >
-                        <Trash2 className="w-4 h-4 mr-2" />
-                        Clear
+                      <DropdownMenuItem>
+                        <Trash className="w-4 h-4 mr-2" /> Delete Text
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
@@ -216,25 +224,28 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
             </TooltipProvider>
           </div>
 
-          <div className="relative mt-4">
-            {showFileUpload && !inputText ? (
-              <FileUpload
-                onFileContent={(content) => {
-                  setInputText(content);
-                  setShowFileUpload(false);
-                }}
-              />
-            ) : (
-              <Textarea
-                placeholder="Enter text to translate..."
-                value={inputText}
-                onChange={(e) => {
-                  setInputText(e.target.value);
-                  setShowFileUpload(false);
-                }}
-                className="min-h-[100px] resize-none pr-12 bg-background border-primary rounded-md"
-              />
-            )}
+          <div className="relative flex items-stretch w-full h-full gap-3 mt-4">
+            {/* {showFileUpload && !inputText ? (
+            ) : ( */}
+            <Textarea
+              placeholder="Enter text to translate..."
+              value={inputText}
+              onChange={(e) => {
+                setInputText(e.target.value);
+              }}
+              className="w-full h-full  rounded-md resize-none min-h-[100px] bg-background border-primary"
+            />
+
+            <FileUpload
+              onFileContent={(content) => {
+                setInputText(content);
+              }}
+              hidden={showFileUpload === false}
+            />
+
+            <SubmitButton hidden={inputText.length <= 0} onClick={() => {}} />
+
+            {/* )} */}
             {/* <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild> */}
@@ -277,9 +288,18 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
               </Tooltip>
             </TooltipProvider> */}
           </div>
-          <div className="mt-2 text-sm text-muted-foreground">
-            Word count: {wordCount}
-          </div>
+          {inputText && (
+            <div className="flex items-center justify-between w-full">
+              <div className="w-full text-sm text-muted-foreground">
+                Word count: <span className="rounded-md ">{countWords()}</span>
+              </div>
+              {/* SHOW THIS ONLY WHEN THERE IS A TEXT TO BE SUMMARIZED */}
+              <div className="flex items-center justify-end w-full gap-2">
+                <span className="text-xs">Summary Length:</span>
+                <Slider className="w-1/4" max={3} step={1} />
+              </div>
+            </div>
+          )}
         </section>
 
         {/* <TabsContent value="translations">

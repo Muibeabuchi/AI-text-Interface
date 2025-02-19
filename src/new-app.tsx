@@ -26,12 +26,12 @@ function App() {
                 AI Translator
               </h1>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex gap-2 h-[45.7955px] items-stretch">
               <ToggleTheme />
               <Button
                 variant="outline"
                 onClick={() => setSheetOpen(true)}
-                className="gap-2 rounded-full hover-shadow"
+                className="h-full gap-2 rounded-full hover-shadow "
               >
                 <PanelRightOpen className="w-4 h-4" />
                 View Summaries
