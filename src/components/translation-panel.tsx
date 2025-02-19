@@ -54,6 +54,19 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
 
   const showFileUpload = inputText.length > 0;
 
+  const handleSubmit = () => {
+    if (mode === "translation") return;
+
+    if (mode === "text") {
+      // logic for detecting language
+      // clear input text
+      setInputText("");
+    }
+    if (mode === "summary") {
+      // logic for summarizing text
+    }
+  };
+
   const handleTranslate = async (language: translateTypes) => {
     // check if a text exists
     if (!inputText.trim()) {
@@ -227,43 +240,38 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
             </TooltipProvider>
           </div>
 
-          {inputText && (
-            <div className="flex items-center justify-between w-full">
-              <div className="w-full text-sm text-muted-foreground">
-                Word count: <span className="rounded-md ">{countWords()}</span>
-              </div>
-              {/* SHOW THIS ONLY WHEN THERE IS A TEXT TO BE SUMMARIZED */}
-              <div className="flex items-center justify-end w-full gap-2">
-                <span className="text-xs">Summary Length:</span>
-                <Slider className="w-1/4" max={3} step={1} />
-              </div>
-            </div>
-          )}
-
           <div className="relative flex items-stretch w-full h-full gap-3 mt-4">
             {/* {showFileUpload && !inputText ? (
             ) : ( */}
-            <Textarea
-              placeholder="Enter text to translate..."
-              value={inputText}
-              onChange={(e) => {
-                setInputText(e.target.value);
-              }}
-              className="w-full h-full  rounded-md resize-none min-h-[100px] bg-background border-primary"
-            />
+            {mode === "translation" ? null : (
+              <>
+                <Textarea
+                  placeholder={
+                    mode === "text"
+                      ? "Enter text to be deciphered..."
+                      : "input a context for the summary"
+                  }
+                  value={inputText}
+                  onChange={(e) => {
+                    setInputText(e.target.value);
+                  }}
+                  className="w-full h-full  rounded-md placeholder:text-darkgreen/50 resize-none min-h-[100px] bg-background border-primary"
+                />
 
-            <FileUpload
-              onFileContent={(content) => {
-                setInputText(content);
-              }}
-              hidden={showFileUpload === false}
-            />
+                <FileUpload
+                  onFileContent={(content) => {
+                    setInputText(content);
+                  }}
+                  hidden={showFileUpload || mode === "summary"}
+                />
 
-            <SubmitButton
-              hidden={inputText.length <= 0}
-              onClick={() => {}}
-              mode={mode}
-            />
+                <SubmitButton
+                  hidden={inputText.length <= 0}
+                  onClick={handleSubmit}
+                  mode={mode}
+                />
+              </>
+            )}
 
             {/* )} */}
             {/* <TooltipProvider>
@@ -308,6 +316,19 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
               </Tooltip>
             </TooltipProvider> */}
           </div>
+
+          {inputText && (
+            <div className="flex items-center justify-between w-full">
+              <div className="w-full text-sm text-muted-foreground">
+                Word count: <span className="rounded-md ">{countWords()}</span>
+              </div>
+              {/* SHOW THIS ONLY WHEN THERE IS A TEXT TO BE SUMMARIZED */}
+              <div className="flex items-center justify-end w-full gap-2">
+                <span className="text-xs">Summary Length:</span>
+                <Slider className="w-1/4" max={3} step={1} />
+              </div>
+            </div>
+          )}
         </section>
 
         {/* <TabsContent value="translations">

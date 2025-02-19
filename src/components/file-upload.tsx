@@ -66,7 +66,7 @@ export function FileUpload({ onFileContent, hidden }: FileUploadProps) {
       {...getRootProps()}
       className={cn(
         "p-4 text-center transition-colors w-full   duration-200 border-2 border-dashed rounded-md cursor-pointer border-primary hover:bg-accent/10",
-        !hidden && "hidden"
+        hidden && "hidden"
       )}
     >
       <input {...getInputProps()} />
