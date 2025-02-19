@@ -27,7 +27,7 @@ import {
 } from "./ui/tooltip";
 import { cn, languages } from "../lib/utils";
 import { FileUpload } from "./file-upload";
-import { translateTypes } from "@/types";
+import { Message, translateTypes } from "@/types";
 import { SubmitButton } from "./submit-button";
 import { Slider } from "./ui/slider";
 import { useText } from "@/hooks/useText";
@@ -38,6 +38,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
+import { useLanguageDetect } from "@/hooks/UseLanguageDetect";
 // import { EmptyStateIllustration } from "./empty-state-illustration";
 // import { DeviceErrorIllustration } from "./error-state-illustration";
 
@@ -50,7 +51,7 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
   const [loading, setLoading] = useState(false);
   const [inputText, setInputText] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [detectedLanguage, setDetectedLanguage] = useState<string | null>(null);
+  // const [detectedLanguage, setDetectedLanguage] = useState<string | null>(null);
 
   const [summaryType, setSummaryType] = useState("key-points");
   const [summaryLength, setSummaryLength] = useState([0]);
@@ -61,34 +62,75 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
 
   const mode = useText((state) => state.mode);
   const handleMode = useText((state) => state.setMode);
+  const addMessage = useText((state) => state.addMessage);
+
+  const { googleAi, languageTagToHumanReadable } = useLanguageDetect();
 
   const showFileUpload = inputText.length > 0;
 
   const shouldHideSubmitButton = () => {
     if (mode === "summary") {
-      return true;
+      return false;
     }
-    if (mode === "text" && inputText.length <= 0) {
-      return true;
+    if (mode === "text" && inputText.length > 0) {
+      return false;
     }
 
-    return false;
+    return true;
   };
 
-  console.log(shouldHideSubmitButton());
+  // console.log(shouldHideSubmitButton());
 
   const handleSubmit = () => {
     if (mode === "translation") return;
 
     if (mode === "text") {
       // logic for detecting language
-      // clear input text
-      setInputText("");
+      addText();
     }
     if (mode === "summary") {
       // logic for summarizing text
     }
   };
+
+  async function addText() {
+    if (!inputText.trim()) return;
+
+    setLoading(true);
+
+    try {
+      // Simulating API calls
+
+      const response = await googleAi(inputText);
+      if (!response) throw new Error("Failed to detect the language");
+      // const  = "en"; // Replace with actual API call
+
+      const readableLanguage = languageTagToHumanReadable(
+        response.language,
+        "en"
+      );
+      if (!readableLanguage) throw new Error("failed to detect the language");
+      const updatedMessage: Message = {
+        // ...newMessage,
+        id: Date.now(),
+        text: inputText,
+
+        readableLanguage,
+        detectedLanguage: response.language,
+      };
+      addMessage(updatedMessage);
+      setInputText("");
+      // setMessages((prev) =>
+      //   prev.map((msg) => (msg.id === newMessage.id ? updatedMessage : msg))
+      // );
+      toast.success("Successfully deciphered the language");
+    } catch {
+      console.error("Error processing Text");
+      toast.error("Failed to detect the language");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   const handleTranslate = async (language: translateTypes) => {
     // check if a text exists
@@ -102,7 +144,7 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
     try {
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 2000));
-      setDetectedLanguage("English");
+      // setDetectedLanguage("English");
       toast.success("Translation complete!");
       handleMode("translation");
     } catch (err: unknown) {
@@ -294,7 +336,7 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
                 />
 
                 <SubmitButton
-                  hidden={shouldHideSubmitButton}
+                  hidden={shouldHideSubmitButton()}
                   onClick={handleSubmit}
                   mode={mode}
                 />

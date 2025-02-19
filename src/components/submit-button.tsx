@@ -25,7 +25,7 @@ export function SubmitButton({
         "border border-olive dark:border-cream transition-all duration-300  hover:scale-95 dark:hover:border-cream  rounded-full shadow-md hover:shadow-lg dark:bg-cream",
         "animate-float",
         loading && "opacity-70 cursor-not-allowed",
-        !hidden && "hidden"
+        hidden && "hidden"
       )}
       onClick={onClick}
       disabled={loading}
