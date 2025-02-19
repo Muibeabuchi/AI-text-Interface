@@ -1,6 +1,7 @@
 import { ThemeProviderContext } from "@/context/theme-provider-context";
 import { Theme, ThemeProviderProps } from "@/types";
 import { useEffect, useState } from "react";
+import { Toaster } from "./ui/sonner";
 
 export default function ThemeProvider({
   children,
@@ -40,6 +41,7 @@ export default function ThemeProvider({
 
   return (
     <ThemeProviderContext.Provider {...props} value={value}>
+      <Toaster position="top-center" />
       {children}
     </ThemeProviderContext.Provider>
   );
