@@ -16,6 +16,7 @@ interface SummarySheetProps {
 
 export function SummarySheet({ open, onOpenChange }: SummarySheetProps) {
   const messages = useText((text) => text.messages);
+  const setActiveMessage = useText((text) => text.setActiveMessage);
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="w-[400px] sm:w-[540px] bg-card">
@@ -26,18 +27,19 @@ export function SummarySheet({ open, onOpenChange }: SummarySheetProps) {
         </SheetHeader>
         <ScrollArea className="h-[calc(100vh-8rem)] mt-6 pr-4">
           <div className="space-y-4">
-            {messages.map((i) => (
+            {messages.map((m) => (
               <>
                 <Button
-                  key={i.id}
+                  key={m.id}
                   variant="outline"
                   className="items-start justify-start w-full h-24 p-4 transition-colors rounded-lg hover:bg-muted border-primary"
+                  onClick={() => setActiveMessage(m.id)}
                 >
-                  {i.readableLanguage}
+                  {m.readableLanguage}
 
-                  {/* {i.} */}
+                  {/* {m.} */}
+                  <p>{m.text}</p>
                 </Button>
-                <p>{i.text}</p>
               </>
             ))}
           </div>

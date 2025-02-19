@@ -8,6 +8,8 @@ interface useTextTypes {
   setMode: (mode: Mode) => void;
   messages: Message[];
   addMessage: (newMessage: Message) => void;
+  activeMessage?: Message;
+  setActiveMessage: (messageId: number) => void;
 }
 
 const initialMode: Mode = "text";
@@ -22,7 +24,15 @@ export const useText = create<useTextTypes>()(
         }),
       messages: [],
       addMessage: (newMessage) =>
-        set((state) => ({ messages: [...state.messages, newMessage] })),
+        set((state) => ({
+          messages: [...state.messages, newMessage],
+          activeMessage: newMessage,
+        })),
+      setActiveMessage: (messageId) =>
+        set((state) => ({
+          activeMessage: state.messages.find((item) => item.id === messageId),
+        })),
+
       // increasePopulation: () => set((state) => ({ bears: state.bears + 1 })),
 
       // removeAllBears: () => set({ bears: 0 }),
