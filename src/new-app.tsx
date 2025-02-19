@@ -18,7 +18,6 @@ function App() {
   return (
     <ThemeProvider defaultTheme="system">
       <div className="min-h-screen transition-colors duration-300 bg-background text-foreground">
-        {/* <Toaster position="top-center" /> */}
         <div className="max-w-4xl p-6 mx-auto">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-2">

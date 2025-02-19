@@ -1,7 +1,7 @@
 import { useState } from "react";
 import {
   ChevronDown,
-  Loader2,
+  // Loader2,
   Menu,
   RotateCw,
   Trash2,
@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "./ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
+// import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { Textarea } from "./ui/textarea";
 import {
   DropdownMenu,
@@ -23,9 +23,11 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "./ui/tooltip";
-import { cn } from "../lib/utils";
+import { cn, languages } from "../lib/utils";
 import { FileUpload } from "./file-upload";
+import { translateTypes } from "@/types";
 
+export type ModeType = "text" | "translation" | "summary";
 interface TranslationPanelProps {
   onSummarize: (text: string) => void;
 }
@@ -37,10 +39,14 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
   const [detectedLanguage, setDetectedLanguage] = useState<string | null>(null);
   const [showFileUpload, setShowFileUpload] = useState(true);
 
-  const handleTranslate = async () => {
+  const [mode, setMode] = useState<ModeType>("text");
+
+  const handleMode = (mode: ModeType) => setMode(mode);
+
+  const handleTranslate = async (language: translateTypes) => {
+    // check if a text exists
     if (!inputText.trim()) {
-      toast.error("Please enter some text to translate");
-      return;
+      return toast.error("Please enter some text to translate");
     }
 
     setLoading(true);
@@ -51,6 +57,7 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
       await new Promise((resolve) => setTimeout(resolve, 2000));
       setDetectedLanguage("English");
       toast.success("Translation complete!");
+      handleMode("translation");
     } catch (err: unknown) {
       setError("Failed to translate text. Please try again.");
       toast.error("Translation failed");
@@ -64,31 +71,84 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
 
   return (
     <div className="space-y-4 overflow-hidden border rounded-lg animate-in fade-in-50 border-primary bg-card shadow-soft">
-      <Tabs defaultValue="text" className="w-full">
-        <div className="sticky top-0 z-10 border-b bg-card border-primary">
-          <TabsList className="justify-center w-full border-b rounded-none border-primary bg-muted">
-            <TabsTrigger
-              value="text"
-              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-t-lg hover-shadow"
+      <section
+        // defaultValue={mode}
+        // value={mode}
+        // onClick={(value: ModeType) => handleMode(value)}
+        className="w-full "
+      >
+        <div className="sticky top-0 z-10 bg-card border-primary">
+          <div className="flex items-center justify-center w-full gap-2 p-2 border-b rounded-none border-primary bg-muted">
+            <div
+              role="button"
+              onClick={() => handleMode("text")}
+              className={cn(
+                " rounded-sm py-0.5 px-5 hover-shadow hover:bg-accent/80 hover:text-primary-foreground text-sm",
+                {
+                  "bg-accent text-primary-foreground": mode === "text",
+                }
+              )}
             >
               TEXT
-            </TabsTrigger>
-            <TabsTrigger
-              value="translations"
-              className="data-[state=active]:bg-secondary data-[state=active]:text-secondary-foreground rounded-t-lg hover-shadow"
-            >
-              TRANSLATIONS
-            </TabsTrigger>
-            <TabsTrigger
-              value="summary"
-              className="data-[state=active]:bg-accent data-[state=active]:text-accent-foreground rounded-t-lg hover-shadow"
+            </div>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <div
+                  role="button"
+                  // onClick={() => handleMode("translation")}
+                  className={cn(
+                    "flex items-center justify-between gap-2 rounded-sm py-0.5 px-5 hover-shadow text-sm hover:bg-accent/80 hover:text-primary-foreground ",
+                    {
+                      "bg-accent text-primary-foreground shadow-sm":
+                        mode === "translation",
+                    }
+                  )}
+                >
+                  TRANSLATIONS
+                  {}
+                  <ChevronDown />
+                </div>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                {languages.map((language) => {
+                  return (
+                    <DropdownMenuItem
+                      onClick={() => handleTranslate(language.shortName)}
+                    >
+                      {language.visibleName.toUpperCase()}
+                    </DropdownMenuItem>
+                  );
+                })}
+                {/* <DropdownMenuItem onClick={() => handleTranslate()}>
+                  Spanish
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleTranslate()}>
+                  French
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleTranslate()}>
+                  German
+                </DropdownMenuItem> */}
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <div
+              role="button"
+              onClick={() => handleMode("summary")}
+              className={cn(
+                " rounded-sm py-0.5 px-5 hover:bg-accent/80 hover:text-primary-foreground  hover-shadow text-sm",
+                {
+                  "bg-accent text-primary-foreground ": mode === "summary",
+                }
+              )}
             >
               SUMMARY
-            </TabsTrigger>
-          </TabsList>
+            </div>
+          </div>
         </div>
 
-        <TabsContent value="text" className="p-4 m-0">
+        {/* OUTPUT BOX */}
+        <section className="p-4 m-0">
           <div className="relative min-h-[300px] rounded-md border border-primary bg-background">
             {loading ? (
               <div className="p-4 space-y-3">
@@ -102,11 +162,12 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
               </div>
             ) : (
               <div className="p-4 min-h-[200px]">
-                {detectedLanguage && (
+                {/* {detectedLanguage && (
                   <p className="text-sm text-muted-foreground">
                     Detected language: {detectedLanguage}
                   </p>
-                )}
+                )} */}
+                HELLO WORLD
               </div>
             )}
 
@@ -118,12 +179,16 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="absolute border rounded-full bottom-2 right-2 hover:bg-muted border-primary"
+                        className="absolute border rounded-full bottom-2 right-2 border-primary"
                       >
                         <Menu className="w-4 h-4" />
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-48">
+                    <DropdownMenuContent
+                      align="end"
+                      side="top"
+                      className="w-48"
+                    >
                       <DropdownMenuItem onClick={() => handleTranslate()}>
                         <RotateCw className="w-4 h-4 mr-2" />
                         Re-translate
@@ -170,10 +235,10 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
                 className="min-h-[100px] resize-none pr-12 bg-background border-primary rounded-md"
               />
             )}
-            <TooltipProvider>
+            {/* <TooltipProvider>
               <Tooltip>
-                <TooltipTrigger asChild>
-                  <DropdownMenu>
+                <TooltipTrigger asChild> */}
+            {/* <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button
                         size="icon"
@@ -204,20 +269,20 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
                         German
                       </DropdownMenuItem>
                     </DropdownMenuContent>
-                  </DropdownMenu>
-                </TooltipTrigger>
+                  </DropdownMenu> */}
+            {/* </TooltipTrigger>
                 <TooltipContent>
                   <p>Select language</p>
                 </TooltipContent>
               </Tooltip>
-            </TooltipProvider>
+            </TooltipProvider> */}
           </div>
           <div className="mt-2 text-sm text-muted-foreground">
             Word count: {wordCount}
           </div>
-        </TabsContent>
+        </section>
 
-        <TabsContent value="translations">
+        {/* <TabsContent value="translations">
           <div className="p-4">
             <p>Translations content goes here</p>
           </div>
@@ -227,8 +292,8 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
           <div className="p-4">
             <p>Summary content goes here</p>
           </div>
-        </TabsContent>
-      </Tabs>
+        </TabsContent> */}
+      </section>
     </div>
   );
 }

@@ -20,6 +20,11 @@ export type AiCapabilitiesTypes = "no" | "readily" | "after-download";
 
 export type translateTypes = "en" | "pt" | "es" | "ru" | "tr" | "fr";
 
+export interface LanguageObjectType {
+  visibleName: string;
+  shortName: translateTypes;
+}
+
 export type Message = {
   id: number;
   text: string;
