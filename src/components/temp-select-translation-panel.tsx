@@ -50,32 +50,19 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
   const [loading, setLoading] = useState(false);
   const [inputText, setInputText] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [detectedLanguage, setDetectedLanguage] = useState<string | null>(null);
 
   const [summaryType, setSummaryType] = useState("key-points");
   const [summaryLength, setSummaryLength] = useState([0]);
   // const [showFileUpload, setShowFileUpload] = useState(true);
 
   // const [mode, setMode] = useState<ModeType>("text");
+  // const [detectedLanguage, setDetectedLanguage] = useState<string | null>(null);
   // const handleMode = (mode: ModeType) => setMode(mode);
 
   const mode = useText((state) => state.mode);
   const handleMode = useText((state) => state.setMode);
 
   const showFileUpload = inputText.length > 0;
-
-  const shouldHideSubmitButton = () => {
-    if (mode === "summary") {
-      return true;
-    }
-    if (mode === "text" && inputText.length <= 0) {
-      return true;
-    }
-
-    return false;
-  };
-
-  console.log(shouldHideSubmitButton());
 
   const handleSubmit = () => {
     if (mode === "translation") return;
@@ -102,7 +89,7 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
     try {
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 2000));
-      setDetectedLanguage("English");
+      // setDetectedLanguage("English");
       toast.success("Translation complete!");
       handleMode("translation");
     } catch (err: unknown) {
@@ -128,12 +115,12 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
         className="w-full "
       >
         <div className="sticky top-0 z-10 bg-card border-primary">
-          <div className="flex items-center justify-center w-full h-[50px] gap-2 p-2 border-b rounded-none border-primary bg-muted">
+          <div className="flex items-center justify-center h-[50px]  gap-2 p-2 border-b rounded-none border-primary bg-muted">
             <div
               role="button"
               onClick={() => handleMode("text")}
               className={cn(
-                " rounded-sm py-0.5 px-5 hover-shadow hover:bg-accent/80 flex items-center justify-center  h-full hover:text-primary-foreground text-sm",
+                " rounded-sm py-0.5 px-5 hover-shadow hover:bg-accent/80 h-full flex items-center justify-center  hover:text-primary-foreground text-sm",
                 {
                   "bg-accent text-primary-foreground": mode === "text",
                 }
@@ -142,42 +129,35 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
               TEXT
             </div>
 
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <div
-                  role="button"
+            <Select value={mode} onValueChange={handleMode}>
+              <SelectTrigger className="w-[180px] p-0">
+                <SelectValue
+                  // role="button"
                   // onClick={() => handleMode("translation")}
-                  className={cn(
-                    "flex items-center justify-between gap-4 rounded-sm py-0.5 px-5 hover-shadow text-sm hover:bg-accent/80 hover:text-primary-foreground ",
-                    {
-                      "bg-accent text-primary-foreground shadow-sm":
-                        mode === "translation",
-                    }
-                  )}
-                >
-                  {
-                    // if language is detected  then show the detected language here
-                    "TRANSLATIONS"
-                  }
-
-                  <ChevronDown />
-                </div>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48">
+                  // className={cn(
+                  //   "flex items-center justify-between gap-4 rounded-sm py-0.5 px-5 hover-shadow text-sm hover:bg-accent/80 hover:text-primary-foreground ",
+                  //   {
+                  //     "bg-accent text-primary-foreground shadow-sm":
+                  //       mode === "translation",
+                  //   }
+                  // )}
+                  placeholder="TRANSLATIONS"
+                />
+              </SelectTrigger>
+              <SelectContent align="end" className="w-48">
                 {languages.map((language) => {
-                  // if language.shortName !== message.detectedLanguage
-                  // else return null
                   return (
-                    <DropdownMenuItem
+                    <SelectItem
                       key={language.shortName}
-                      onClick={() => handleTranslate(language.shortName)}
+                      value={language.shortName}
+                      // onClick={() => handleTranslate(language.shortName)}
                     >
                       {language.visibleName.toUpperCase()}
-                    </DropdownMenuItem>
+                    </SelectItem>
                   );
                 })}
-              </DropdownMenuContent>
-            </DropdownMenu>
+              </SelectContent>
+            </Select>
 
             <div
               role="button"
@@ -277,7 +257,7 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
                   placeholder={
                     mode === "text"
                       ? "Enter text to be deciphered..."
-                      : "input a context for the summary"
+                      : "Give a Context to be used for Summarization"
                   }
                   value={inputText}
                   onChange={(e) => {
@@ -294,7 +274,7 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
                 />
 
                 <SubmitButton
-                  hidden={shouldHideSubmitButton}
+                  hidden={inputText.length <= 0}
                   onClick={handleSubmit}
                   mode={mode}
                 />

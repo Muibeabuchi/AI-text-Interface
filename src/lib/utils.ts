@@ -32,3 +32,9 @@ export const languages: LanguageObjectType[] = [
     shortName: "fr",
   },
 ];
+
+export const summaryLengthMapper = {
+  0: "short",
+  1: "medium",
+  2: "long",
+};
