@@ -65,7 +65,7 @@ export function FileUpload({ onFileContent, hidden }: FileUploadProps) {
     <div
       {...getRootProps()}
       className={cn(
-        "p-4 text-center transition-colors w-full   duration-200 border-2 border-dashed rounded-md cursor-pointer border-primary hover:bg-accent/10",
+        "p-4 text-center transition-colors w-full h-full    duration-200 border-2 border-dashed rounded-md cursor-pointer border-primary hover:bg-accent/10",
         hidden && "hidden"
       )}
     >

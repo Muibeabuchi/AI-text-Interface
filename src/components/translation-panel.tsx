@@ -39,6 +39,7 @@ import {
   SelectValue,
 } from "./ui/select";
 import { useLanguageDetect } from "@/hooks/UseLanguageDetect";
+import { EmptyStateIllustration } from "./empty-state-illustration";
 // import { EmptyStateIllustration } from "./empty-state-illustration";
 // import { DeviceErrorIllustration } from "./error-state-illustration";
 
@@ -63,6 +64,7 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
   const mode = useText((state) => state.mode);
   const handleMode = useText((state) => state.setMode);
   const addMessage = useText((state) => state.addMessage);
+  const activeMessage = useText((state) => state.activeMessage);
 
   const { googleAi, languageTagToHumanReadable } = useLanguageDetect();
 
@@ -251,13 +253,17 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
               </div>
             ) : (
               <div className="p-4 min-h-[200px]">
+                {activeMessage ? (
+                  <p>{activeMessage.text}</p>
+                ) : (
+                  <EmptyStateIllustration />
+                )}
                 {/* {detectedLanguage && (
                   <p className="text-sm text-muted-foreground">
                     Detected language: {detectedLanguage}
                   </p>
                 )} */}
                 {/* <DeviceErrorIllustration /> */}
-                {/* <EmptyStateIllustration /> */}
               </div>
             )}
 
@@ -310,11 +316,11 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
             </TooltipProvider>
           </div>
 
-          <div className="relative flex items-stretch w-full h-full gap-3 mt-4">
+          <div className="relative flex  w-full  h-full gap-3 mt-4  ">
             {/* {showFileUpload && !inputText ? (
             ) : ( */}
             {mode === "translation" ? null : (
-              <>
+              <div className="w-full  lg:h-[150px] h-[300px] flex items-stretch flex-col   lg:flex-row gap-3">
                 <Textarea
                   placeholder={
                     mode === "text"
@@ -325,7 +331,7 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
                   onChange={(e) => {
                     setInputText(e.target.value);
                   }}
-                  className="w-full h-full  rounded-md placeholder:text-darkgreen/50 resize-none min-h-[100px] bg-background border-primary"
+                  className="w-full h-full items-stretch   rounded-md placeholder:text-darkgreen/50 resize-none bg-background border-primary"
                 />
 
                 <FileUpload
@@ -340,7 +346,7 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
                   onClick={handleSubmit}
                   mode={mode}
                 />
-              </>
+              </div>
             )}
 
             {/* )} */}
