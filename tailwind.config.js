@@ -11,11 +11,9 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        lightgray: "#dad7cd",
-        darkgreen: "#3a5a40",
-        mediumgreen: "#588157",
-        sage: "#a3b18a",
-        cream: "#dad7cd",
+        cream: "#fefae0",
+        darkgreen: "#283618",
+        olive: "#606c38",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

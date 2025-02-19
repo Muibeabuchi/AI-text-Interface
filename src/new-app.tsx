@@ -7,6 +7,7 @@ import { PanelRightOpen, Moon, Sun } from "lucide-react";
 import { AppIcon } from "@/components/app-icon";
 import ThemeProvider from "./components/theme-provider";
 import { useTheme } from "next-themes";
+import { ToggleTheme } from "./components/toggle-theme";
 
 function App() {
   const [sheetOpen, setSheetOpen] = useState(false);
@@ -30,18 +31,7 @@ function App() {
               </h1>
             </div>
             <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                className="rounded-full hover-shadow"
-              >
-                {theme === "dark" ? (
-                  <Sun className="h-[1.2rem] w-[1.2rem]" />
-                ) : (
-                  <Moon className="h-[1.2rem] w-[1.2rem]" />
-                )}
-              </Button>
+              <ToggleTheme />
               <Button
                 variant="outline"
                 onClick={() => setSheetOpen(true)}

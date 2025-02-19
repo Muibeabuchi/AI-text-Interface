@@ -6,65 +6,66 @@
 
 @layer base {
   :root {
-    --background: 80 14% 83%; /* cream */
-    --foreground: 133 21% 29%; /* darkgreen */
+    --background: 55 91% 95%; /* cream */
+    --foreground: 79 31% 15%; /* darkgreen */
 
-    --card: 80 14% 83%; /* cream */
-    --card-foreground: 133 21% 29%; /* darkgreen */
+    --card: 55 91% 95%; /* cream */
+    --card-foreground: 79 31% 15%; /* darkgreen */
 
-    --popover: 80 14% 83%; /* cream */
-    --popover-foreground: 133 21% 29%; /* darkgreen */
+    --popover: 55 91% 95%; /* cream */
+    --popover-foreground: 79 31% 15%; /* darkgreen */
 
-    --primary: 133 21% 29%; /* darkgreen */
-    --primary-foreground: 80 14% 83%; /* cream */
+    --primary: 79 31% 32%; /* olive */
+    --primary-foreground: 55 91% 95%; /* cream */
 
-    --secondary: 133 16% 35%; /* mediumgreen */
-    --secondary-foreground: 80 14% 83%; /* cream */
+    --secondary: 79 31% 15%; /* darkgreen */
+    --secondary-foreground: 55 91% 95%; /* cream */
 
-    --muted: 80 14% 83%; /* cream */
-    --muted-foreground: 133 21% 29%; /* darkgreen */
+    --muted: 55 91% 95%; /* cream */
+    --muted-foreground: 79 31% 15%; /* darkgreen */
 
-    --accent: 80 14% 62%; /* sage */
-    --accent-foreground: 133 21% 29%; /* darkgreen */
+    --accent: 79 31% 32%; /* olive */
+    --accent-foreground: 55 91% 95%; /* cream */
 
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 80 14% 83%; /* cream */
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 55 91% 95%; /* cream */
 
-    --border: 133 16% 35%; /* mediumgreen */
-    --input: 133 16% 35%; /* mediumgreen */
-    --ring: 133 21% 29%; /* darkgreen */
+    --border: 79 31% 32%; /* olive */
+    --input: 79 31% 32%; /* olive */
+    --ring: 79 31% 32%; /* olive */
 
     --radius: 0.5rem;
   }
-
   .dark {
-    --background: 133 21% 29%; /* darkgreen */
-    --foreground: 80 14% 83%; /* cream */
+    --background: 79 31% 15%; /* darkgreen */
+    --foreground: 55 91% 95%; /* cream */
 
-    --card: 133 21% 29%; /* darkgreen */
-    --card-foreground: 80 14% 83%; /* cream */
+    --card: 79 31% 15%; /* darkgreen */
+    --card-foreground: 55 91% 95%; /* cream */
 
-    --popover: 133 21% 29%; /* darkgreen */
-    --popover-foreground: 80 14% 83%; /* cream */
+    --popover: 79 31% 15%; /* darkgreen */
+    --popover-foreground: 55 91% 95%; /* cream */
 
-    --primary: 80 14% 83%; /* cream */
-    --primary-foreground: 133 21% 29%; /* darkgreen */
+    --primary: 79 31% 32%; /* olive */
+    --primary-foreground: 55 91% 95%; /* cream */
 
-    --secondary: 133 16% 35%; /* mediumgreen */
-    --secondary-foreground: 80 14% 83%; /* cream */
+    --secondary: 79 31% 15%; /* darkgreen */
+    --secondary-foreground: 55 91% 95%; /* cream */
 
-    --muted: 133 21% 29%; /* darkgreen */
-    --muted-foreground: 80 14% 83%; /* cream */
+    --muted: 79 31% 15%; /* darkgreen */
+    --muted-foreground: 55 91% 95%; /* cream */
 
-    --accent: 80 14% 62%; /* sage */
-    --accent-foreground: 133 21% 29%; /* darkgreen */
+    --accent: 79 31% 32%; /* olive */
+    --accent-foreground: 55 91% 95%; /* cream */
 
-    --destructive: 0 62% 30%;
-    --destructive-foreground: 80 14% 83%; /* cream */
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 55 91% 95%; /* cream */
 
-    --border: 133 16% 35%; /* mediumgreen */
-    --input: 133 16% 35%; /* mediumgreen */
-    --ring: 80 14% 83%; /* cream */
+    --border: 79 31% 32%; /* olive */
+    --input: 79 31% 32%; /* olive */
+    --ring: 79 31% 32%; /* olive */
+
+    --radius: 0.5rem;
   }
 }
 

@@ -10,7 +10,7 @@ import {
 } from "./components/ui/select";
 import { Card, CardContent } from "./components/ui/card";
 import { Send, Loader2 } from "lucide-react";
-import { ThemeToggle } from "./components/toggle-theme";
+import { ToggleTheme } from "./components/toggle-theme";
 import ThemeProvider from "./components/theme-provider";
 import { UseTranslator } from "./hooks/useTranslator";
 import { Message } from "./types";
@@ -104,12 +104,13 @@ function App() {
 
   return (
     <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
-      <div className="flex flex-col h-screen bg-background text-foreground p-4">
-        <div className="flex justify-between items-center mb-4">
+      <div className="flex flex-col h-screen p-4 bg-background text-foreground">
+        <div className="flex items-center justify-between mb-4">
           <h1 className="text-2xl font-bold">AI-Powered Text Processing</h1>
-          <ThemeToggle />
+          {/* <ThemeToggle /> */}
+          <ToggleTheme />
         </div>
-        <Card className="flex-grow overflow-auto mb-4">
+        <Card className="flex-grow mb-4 overflow-auto">
           <CardContent className="p-4 space-y-4">
             {messages.map((message) => (
               <div key={message.id} className="space-y-2">
@@ -139,7 +140,7 @@ function App() {
                       size="sm"
                     >
                       {message.isTranslating ? (
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                       ) : (
                         "Translate"
                       )}
@@ -176,9 +177,9 @@ function App() {
           />
           <Button onClick={handleSend} disabled={isProcessing}>
             {isProcessing ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
             ) : (
-              <Send className="h-4 w-4" />
+              <Send className="w-4 h-4" />
             )}
             <span className="sr-only">Send</span>
           </Button>
