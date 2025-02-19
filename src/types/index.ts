@@ -28,12 +28,12 @@ export interface LanguageObjectType {
 export type Message = {
   id: number;
   text: string;
-  language?: string;
-  readableLanguage?: string;
+  detectedLanguage: string;
   summary?: string;
-  translation?: string;
-  isTranslating?: boolean;
-  translationError?: boolean;
+  translations: Record<translateTypes, string>;
+  // readableLanguage: string;
+  // isTranslating?: boolean;
+  // translationError?: boolean;
 };
 
 export type Mode = "summary" | "text" | "translation";
