@@ -1,4 +1,4 @@
-import { Moon, Sun } from "lucide-react";
+import { Monitor, Moon, Sun } from "lucide-react";
 import { useTheme } from "@/hooks/useTheme";
 import { Button } from "./ui/button";
 import {
@@ -7,9 +7,44 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
+import { cn } from "@/lib/utils";
 
 export function ToggleTheme() {
-  const { setTheme } = useTheme();
+  const { setTheme, theme } = useTheme();
+
+  return (
+    <div className="flex items-center justify-between gap-2 p-1.5 border rounded-full shadow-sm border-input bg-background ">
+      <Button
+        variant="ghost"
+        className={cn(`w-1 h-1 p-4 rounded-full`, {
+          "bg-accent text-accent-foreground": theme === "light",
+        })}
+        onClick={() => setTheme("light")}
+      >
+        <Sun className="w-2 h-2 transition-all rounded-full" />
+      </Button>
+      <Button
+        variant="ghost"
+        onClick={() => setTheme("dark")}
+        className={cn(`w-1 h-1 p-4 rounded-full`, {
+          "bg-accent text-accent-foreground": theme === "dark",
+        })}
+      >
+        <Moon className="w-3 h-3 transition-all rounded-full " />
+      </Button>
+      <Button
+        variant="ghost"
+        onClick={() => setTheme("system")}
+        className={cn(`w-1 h-1 p-4 rounded-full`, {
+          "bg-accent text-accent-foreground": theme === "system",
+        })}
+      >
+        <Monitor className="w-3 h-3 transition-all rounded-full " />
+      </Button>
+      {/* <Button onClick={() => setTheme("dark")}>Dark</Button>
+      <Button onClick={() => setTheme("system")}>System</Button> */}
+    </div>
+  );
 
   return (
     <DropdownMenu>

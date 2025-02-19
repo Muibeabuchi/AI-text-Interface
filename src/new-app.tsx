@@ -1,17 +1,14 @@
 import { useState } from "react";
-// import { Toaster } from "sonner";
 import { TranslationPanel } from "@/components/translation-panel";
 import { SummarySheet } from "@/components/summary-sheet";
 import { Button } from "./components/ui/button";
-import { PanelRightOpen, Moon, Sun } from "lucide-react";
+import { PanelRightOpen } from "lucide-react";
 import { AppIcon } from "@/components/app-icon";
 import ThemeProvider from "./components/theme-provider";
-import { useTheme } from "next-themes";
 import { ToggleTheme } from "./components/toggle-theme";
 
 function App() {
   const [sheetOpen, setSheetOpen] = useState(false);
-  const { theme, setTheme } = useTheme();
 
   const handleSummarize = (text: string) => {
     if (!text) return;
