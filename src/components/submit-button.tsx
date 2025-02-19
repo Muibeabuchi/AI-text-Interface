@@ -35,7 +35,7 @@ export function SubmitButton({
           <div className="w-5 h-5 border-2 rounded-full border-cream border-t-transparent animate-spin" />
         ) : // {
         mode === "summary" ? (
-          <Wand2 />
+          <Wand2 className="w-5 h-5 dark:text-darkgreen " />
         ) : mode === "text" ? (
           <Send className="w-5 h-5 dark:text-darkgreen " />
         ) : null
