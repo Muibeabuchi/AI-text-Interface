@@ -29,9 +29,10 @@ import { cn, languages } from "../lib/utils";
 import { FileUpload } from "./file-upload";
 import { translateTypes } from "@/types";
 import { SubmitButton } from "./submit-button";
-import { EmptyStateIllustration } from "./empty-state-illustration";
-import { DeviceErrorIllustration } from "./error-state-illustration";
 import { Slider } from "./ui/slider";
+import { useText } from "@/hooks/useText";
+// import { EmptyStateIllustration } from "./empty-state-illustration";
+// import { DeviceErrorIllustration } from "./error-state-illustration";
 
 export type ModeType = "text" | "translation" | "summary";
 interface TranslationPanelProps {
@@ -45,11 +46,13 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
   const [detectedLanguage, setDetectedLanguage] = useState<string | null>(null);
   // const [showFileUpload, setShowFileUpload] = useState(true);
 
-  const [mode, setMode] = useState<ModeType>("text");
+  // const [mode, setMode] = useState<ModeType>("text");
+  // const handleMode = (mode: ModeType) => setMode(mode);
+
+  const mode = useText((state) => state.mode);
+  const handleMode = useText((state) => state.setMode);
 
   const showFileUpload = inputText.length > 0;
-
-  const handleMode = (mode: ModeType) => setMode(mode);
 
   const handleTranslate = async (language: translateTypes) => {
     // check if a text exists
@@ -224,6 +227,19 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
             </TooltipProvider>
           </div>
 
+          {inputText && (
+            <div className="flex items-center justify-between w-full">
+              <div className="w-full text-sm text-muted-foreground">
+                Word count: <span className="rounded-md ">{countWords()}</span>
+              </div>
+              {/* SHOW THIS ONLY WHEN THERE IS A TEXT TO BE SUMMARIZED */}
+              <div className="flex items-center justify-end w-full gap-2">
+                <span className="text-xs">Summary Length:</span>
+                <Slider className="w-1/4" max={3} step={1} />
+              </div>
+            </div>
+          )}
+
           <div className="relative flex items-stretch w-full h-full gap-3 mt-4">
             {/* {showFileUpload && !inputText ? (
             ) : ( */}
@@ -243,7 +259,11 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
               hidden={showFileUpload === false}
             />
 
-            <SubmitButton hidden={inputText.length <= 0} onClick={() => {}} />
+            <SubmitButton
+              hidden={inputText.length <= 0}
+              onClick={() => {}}
+              mode={mode}
+            />
 
             {/* )} */}
             {/* <TooltipProvider>
@@ -288,18 +308,6 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
               </Tooltip>
             </TooltipProvider> */}
           </div>
-          {inputText && (
-            <div className="flex items-center justify-between w-full">
-              <div className="w-full text-sm text-muted-foreground">
-                Word count: <span className="rounded-md ">{countWords()}</span>
-              </div>
-              {/* SHOW THIS ONLY WHEN THERE IS A TEXT TO BE SUMMARIZED */}
-              <div className="flex items-center justify-end w-full gap-2">
-                <span className="text-xs">Summary Length:</span>
-                <Slider className="w-1/4" max={3} step={1} />
-              </div>
-            </div>
-          )}
         </section>
 
         {/* <TabsContent value="translations">

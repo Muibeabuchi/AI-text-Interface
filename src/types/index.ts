@@ -35,3 +35,5 @@ export type Message = {
   isTranslating?: boolean;
   translationError?: boolean;
 };
+
+export type Mode = "summary" | "text" | "translation";

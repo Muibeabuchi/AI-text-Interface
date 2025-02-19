@@ -1,15 +1,22 @@
-import { Send } from "lucide-react";
+import { Send, Wand2 } from "lucide-react";
 import { Button } from "./ui/button";
 import { cn } from "../lib/utils";
+import { Mode } from "@/types";
 
 interface SubmitButtonProps {
   onClick: () => void;
   loading?: boolean;
   hidden: boolean;
+  mode: Mode;
   // disabled:boolean
 }
 
-export function SubmitButton({ onClick, loading, hidden }: SubmitButtonProps) {
+export function SubmitButton({
+  onClick,
+  loading,
+  hidden,
+  mode = "text",
+}: SubmitButtonProps) {
   return (
     <Button
       size="icon"
@@ -23,11 +30,17 @@ export function SubmitButton({ onClick, loading, hidden }: SubmitButtonProps) {
       onClick={onClick}
       disabled={loading}
     >
-      {loading ? (
-        <div className="w-5 h-5 border-2 rounded-full border-cream border-t-transparent animate-spin" />
-      ) : (
-        <Send className="w-5 h-5 dark:text-darkgreen " />
-      )}
+      {
+        loading ? (
+          <div className="w-5 h-5 border-2 rounded-full border-cream border-t-transparent animate-spin" />
+        ) : // {
+        mode === "summary" ? (
+          <Wand2 />
+        ) : mode === "text" ? (
+          <Send className="w-5 h-5 dark:text-darkgreen " />
+        ) : null
+        // }
+      }
     </Button>
   );
 }
