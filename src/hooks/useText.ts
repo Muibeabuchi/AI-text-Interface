@@ -11,6 +11,7 @@ interface useTextTypes {
   activeMessage?: Message;
   setActiveMessage: (messageId: number) => void;
   DeleteText: (messageId: number) => void;
+  DeleteSummary: (messageId: number) => void;
 }
 
 const initialMode: Mode = "text";
@@ -39,6 +40,14 @@ export const useText = create<useTextTypes>()(
           activeMessage: undefined,
           messages: state.messages.find((m) => m.id === messageId)
             ? state.messages.filter((m) => m.id !== messageId)
+            : state.messages,
+        })),
+      DeleteSummary: (messageId) =>
+        set((state) => ({
+          messages: state.messages.find((m) => m.id === messageId)
+            ? state.messages.map((m) =>
+                m.id === messageId ? { ...m, summary: undefined } : m
+              )
             : state.messages,
         })),
     }),

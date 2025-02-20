@@ -68,6 +68,7 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
   const addMessage = useText((state) => state.addMessage);
   const activeMessage = useText((state) => state.activeMessage);
   const deleteText = useText((state) => state.DeleteText);
+  const deleteSummary = useText((state) => state.DeleteSummary);
 
   const { googleAi, languageTagToHumanReadable } = useLanguageDetect();
 
@@ -96,9 +97,13 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
     }
   };
 
-  const handleDeleteText = () => {
+  const handleDelete = () => {
     if (!activeMessage) return;
-    deleteText(activeMessage.id);
+    if (mode === "text") {
+      deleteText(activeMessage.id);
+    } else if (mode == "summary") {
+      deleteSummary(activeMessage.id);
+    }
   };
 
   async function addText() {
@@ -309,8 +314,9 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
                         <Type className="w-4 h-4 mr-2" />
                         Summarize
                       </DropdownMenuItem>
-                      <DropdownMenuItem onClick={handleDeleteText}>
-                        <Trash className="w-4 h-4 mr-2" /> Delete Text
+                      <DropdownMenuItem onClick={handleDelete}>
+                        <Trash className="w-4 h-4 mr-2" />
+                        {mode === "text" ? "Delete Text" : "Delete Summary"}
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
