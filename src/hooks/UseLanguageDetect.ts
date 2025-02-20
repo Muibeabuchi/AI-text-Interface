@@ -34,29 +34,19 @@ export function useLanguageDetect() {
           monitor(m) {
             m.addEventListener("downloadprogress", (e) => {
               console.log(`Downloaded ${e.loaded} of ${e.total} bytes.`);
-              toast.promise(detector, {
-                loading: `Downloading the required data.`,
-                success: () => {
-                  return `language detector is ready for use `;
-                },
-                error: "Error deciphering the language from text",
-              });
             });
           },
         });
 
         await detector.ready;
       }
-
       const detectedLanguage = await detector.detect(inputText);
 
       return {
         // readableLanguage,
         language: detectedLanguage[0]?.detectedLanguage as string,
       };
-    }
-    // }
-    else {
+    } else {
       toast.error(`This device is not compatible with browser feature`);
     }
   }, []);

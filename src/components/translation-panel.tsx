@@ -233,7 +233,7 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
                   {
                     // if language is detected  then show the detected language here
                     activeMessage
-                      ? activeMessage.readableLanguage
+                      ? activeMessage.readableLanguage.split(" ")[0]
                       : "TRANSLATIONS"
                   }
 
@@ -244,14 +244,19 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
                 {languages.map((language) => {
                   // if language.shortName !== message.detectedLanguage
                   // else return null
-                  return (
-                    <DropdownMenuItem
-                      key={language.shortName}
-                      onClick={() => handleTranslate(language.shortName)}
-                    >
-                      {language.visibleName.toUpperCase()}
-                    </DropdownMenuItem>
-                  );
+                  const canShowLanguage =
+                    activeMessage &&
+                    activeMessage.detectedLanguage === language.shortName;
+                  if (!canShowLanguage) {
+                    return (
+                      <DropdownMenuItem
+                        key={language.shortName}
+                        onClick={() => handleTranslate(language.shortName)}
+                      >
+                        {language.visibleName.toUpperCase()}
+                      </DropdownMenuItem>
+                    );
+                  } else return null;
                 })}
               </DropdownMenuContent>
             </DropdownMenu>
@@ -324,14 +329,18 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
                       side="top"
                       className="w-48"
                     >
-                      <DropdownMenuItem>
+                      {/* <DropdownMenuItem>
                         <RotateCw className="w-4 h-4 mr-2" />
                         Re-translate
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => onSummarize(inputText)}>
-                        <Type className="w-4 h-4 mr-2" />
-                        Summarize
-                      </DropdownMenuItem>
+                      </DropdownMenuItem> */}
+                      {activeMessage && activeMessage?.summary ? null : (
+                        <DropdownMenuItem
+                          onClick={() => onSummarize(inputText)}
+                        >
+                          <Type className="w-4 h-4 mr-2" />
+                          Summarize
+                        </DropdownMenuItem>
+                      )}
                       {showDropdown() ? (
                         <DropdownMenuItem onClick={handleDelete}>
                           <Trash className="w-4 h-4 mr-2" />
