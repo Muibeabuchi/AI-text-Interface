@@ -6,7 +6,7 @@ export function EmptyStateIllustration({ mode }: { mode: Mode }) {
   const isDark = theme === "dark";
 
   return (
-    <div className="flex flex-col items-center justify-center p-8">
+    <div className="flex flex-col items-center justify-center ">
       <svg
         width="200"
         height="200"

@@ -5,9 +5,8 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Button } from "@/components/ui/button";
-// import { ChevronRight } from "lucide-react";
 import { useText } from "@/hooks/useText";
+import React from "react";
 
 interface SummarySheetProps {
   open: boolean;
@@ -28,22 +27,21 @@ export function SummarySheet({ open, onOpenChange }: SummarySheetProps) {
         <ScrollArea className="h-[calc(100vh-8rem)] mt-6 pr-4">
           <div className="space-y-4">
             {messages.map((m) => (
-              <>
-                <Button
-                  key={m.id}
-                  variant="outline"
-                  className="items-start justify-start w-full h-24 p-4 transition-colors rounded-lg hover:bg-muted border-primary"
+              <React.Fragment key={m.id}>
+                <div
+                  // variant="outline"
+                  className="items-start justify-start w-full h-24 p-4 truncate transition-colors border rounded-lg cursor-pointer border-olive text-wrap hover:bg-muted border-primary"
                   onClick={() => {
                     onOpenChange(false);
                     setActiveMessage(m.id);
                   }}
                 >
-                  {m.readableLanguage}
+                  <p className="text-xl">{m.readableLanguage}</p>
 
                   {/* {m.} */}
-                  <p>{m.text}</p>
-                </Button>
-              </>
+                  <p className="text-xs">{m.text.slice(0, 50)}...</p>
+                </div>
+              </React.Fragment>
             ))}
           </div>
         </ScrollArea>

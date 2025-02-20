@@ -13,9 +13,11 @@ export function useLanguageDetect() {
   );
 
   const googleAi = useCallback(async (inputText: string) => {
+    // @ts-expect-error THere is no types for the self.AI api
     if ("ai" in self && "languageDetector" in window.self.ai) {
       // The Language Detector API is available.
       const languageDetectorCapabilities =
+        // @ts-expect-error THere is no types for the self.AI api
         await window.self.ai.languageDetector.capabilities();
       const canDetect = languageDetectorCapabilities.capabilities;
 
@@ -26,20 +28,17 @@ export function useLanguageDetect() {
         return;
       }
       if (canDetect === "readily") {
+        // @ts-expect-error THere is no types for the self.AI api
         detector = await window.self.ai.languageDetector.create();
         toast.success("The language detector can immediately be used");
       } else {
         // The language detector can be used after model download.
-        detector = await window.self.ai.languageDetector.create({
-          monitor(m) {
-            m.addEventListener("downloadprogress", (e) => {
-              console.log(`Downloaded ${e.loaded} of ${e.total} bytes.`);
-            });
-          },
-        });
-
+        // @ts-expect-error THere is no types for the self.AI api
+        detector = await window.self.ai.languageDetector.create({});
+        // @ts-expect-error THere is no types for the self.AI api
         await detector.ready;
       }
+      // @ts-expect-error THere is no types for the self.AI api
       const detectedLanguage = await detector.detect(inputText);
 
       return {

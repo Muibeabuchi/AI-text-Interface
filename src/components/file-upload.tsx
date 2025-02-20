@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { FileRejection, useDropzone } from "react-dropzone";
-import { Upload, File } from "lucide-react";
+import { Upload } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 

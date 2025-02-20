@@ -1,34 +1,26 @@
 import { AiCapabilitiesTypes } from "@/types";
-// import { useState } from "react";
+import { useState } from "react";
+import { toast } from "sonner";
 
 export function UseTranslator() {
-  // const [translatorError, setTranslatorError] = useState("");
-  // const [isTranslating, setIsTranslating] = useState(false);
+  const [isTranslating, setIsTranslating] = useState(false);
 
   async function translator({
     targetlanguage,
     currentLanguage,
     textToBeTranslated,
-    handleTranslationState,
-    messageId,
-    handleTranslationError,
   }: {
     targetlanguage: string;
-    currentLanguage?: string;
+    currentLanguage: string;
     textToBeTranslated: string;
-    handleTranslationState: (messageId: number, status: boolean) => void;
-    handleTranslationError: (messageId: number, errorStatus: boolean) => void;
-    messageId: number;
   }) {
-    // console.log("targetLanguage", targetlanguage);
-    // console.log("currentLanguage", currentLanguage);
-    // console.log("text to translated", textToBeTranslated);
-    try {
-      handleTranslationState(messageId, true);
-      if ("ai" in self && "translator" in window.self.ai) {
-        // The Translator API is supported.
+    setIsTranslating(true);
 
+    try {
+      // @ts-expect-error THere is no types for the self.AI api
+      if ("ai" in self && "translator" in window.self.ai) {
         const translatorCapabilities =
+          // @ts-expect-error THere is no types for the self.AI api
           await window.self.ai.translator.capabilities();
         const canTranslate: AiCapabilitiesTypes =
           translatorCapabilities.languagePairAvailable(
@@ -36,50 +28,43 @@ export function UseTranslator() {
             currentLanguage
           );
 
-        console.log(canTranslate);
         let translator;
         if (canTranslate === "no") {
-          // throw new Error("Failed to translate the languages");
-          handleTranslationError(messageId, true);
+          toast.error(
+            "Your device is not compatible with these experimiantal API's"
+          );
         }
         if (canTranslate === "readily") {
+          // @ts-expect-error THere is no types for the self.AI api
           translator = await window.self.ai.translator.create({
             sourceLanguage: currentLanguage,
             targetLanguage: targetlanguage,
           });
-          console.log("i am in the readily block");
         } else {
-          console.log("i am in the after download execution block");
-
+          // @ts-expect-error THere is no types for the self.AI api
           translator = await window.self.ai.translator.create({
             sourceLanguage: currentLanguage,
             targetLanguage: targetlanguage,
-            monitor(m) {
-              m.addEventListener("downloadprogress", (e) => {
-                console.log(`Downloaded ${e.loaded} of ${e.total} bytes.`);
-              });
-            },
           });
-          console.log("i am in the after download execution block");
-          // await translator.ready;
+          toast.info(
+            "Downloading the necessary resources to translate the selected languages"
+          );
         }
-        console.log(translator);
 
         return await translator.translate(textToBeTranslated);
       } else {
-        // Todo: use toast to show this error
-        throw new Error("This feature is not supported in your browser");
+        toast.error("This feature is not supported in your browser");
+        // throw new Error("This feature is not supported in your browser");
       }
-    } catch (error) {
-      // Todo: use toast to show this error
-      // handleTranslationError(messageId,);
-      console.log(error);
+    } catch {
+      toast.error("An error occurred while translating");
     } finally {
-      handleTranslationState(messageId, false);
+      setIsTranslating(false);
     }
   }
 
   return {
     translator,
+    isTranslating,
   };
 }

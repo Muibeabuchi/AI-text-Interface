@@ -30,8 +30,9 @@ export type Message = {
   text: string;
   detectedLanguage: string;
   summary?: string;
-  translations?: Record<translateTypes, string>;
+  translations?: Record<string, string>;
   readableLanguage: string;
+  activeTranslationLanguage?: string;
   // isTranslating?: boolean;
   // translationError?: boolean;
 };
