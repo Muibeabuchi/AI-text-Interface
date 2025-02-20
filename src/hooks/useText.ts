@@ -20,9 +20,10 @@ export const useText = create<useTextTypes>()(
     (set) => ({
       mode: initialMode,
       setMode: (mode) =>
-        set({
-          mode,
-        }),
+        set((state) => ({
+          mode:
+            mode === "summary" ? (!state.activeMessage ? "text" : mode) : mode,
+        })),
       messages: [],
       addMessage: (newMessage) =>
         set((state) => ({

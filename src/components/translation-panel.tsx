@@ -84,8 +84,6 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
     return true;
   };
 
-  // console.log(shouldHideSubmitButton());
-
   const handleSubmit = () => {
     if (mode === "translation") return;
 
@@ -233,7 +231,11 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
 
             <div
               role="button"
-              onClick={() => handleMode("summary")}
+              onClick={() => {
+                if (!activeMessage)
+                  toast.info("Select a text to be summarized");
+                handleMode("summary");
+              }}
               className={cn(
                 " rounded-sm py-0.5 lg:px-5 px-2 hover:bg-accent/80 h-full flex items-center justify-center hover:text-primary-foreground  hover-shadow text-sm",
                 {
