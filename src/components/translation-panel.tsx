@@ -40,6 +40,7 @@ import {
 } from "./ui/select";
 import { useLanguageDetect } from "@/hooks/UseLanguageDetect";
 import LoadingSkeleton from "./empty-text-skeleton";
+import { EmptyStateIllustration } from "./empty-state-illustration";
 // import { EmptyStateIllustration } from "./empty-state-illustration";
 // import { EmptyStateIllustration } from "./empty-state-illustration";
 // import { DeviceErrorIllustration } from "./error-state-illustration";
@@ -242,9 +243,9 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
         {/* OUTPUT BOX */}
         <section className="flex flex-col p-4 m-0 gap-y-3">
           <div className="relative min-h-[300px] rounded-md border border-primary bg-background">
-            <LoadingSkeleton />
-            {/* {loading ? ( */}
-            {/* ) : error ? (
+            {loading ? (
+              <LoadingSkeleton />
+            ) : error ? (
               <div className="flex items-center gap-2 p-4 text-destructive">
                 <span className="text-sm">{error}</span>
               </div>
@@ -254,15 +255,15 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
                   <p>{activeMessage.text}</p>
                 ) : (
                   <EmptyStateIllustration />
-                )} */}
-            {/* {detectedLanguage && (
+                )}
+                {/* {detectedLanguage && (
                   <p className="text-sm text-muted-foreground">
                     Detected language: {detectedLanguage}
                   </p>
-                )} */}
-            {/* <DeviceErrorIllustration /> */}
-            {/* </div> */}
-            {/* )} */}
+                )}
+            <DeviceErrorIllustration /> */}
+              </div>
+            )}
 
             <TooltipProvider>
               <Tooltip>

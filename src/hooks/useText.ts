@@ -10,6 +10,7 @@ interface useTextTypes {
   addMessage: (newMessage: Message) => void;
   activeMessage?: Message;
   setActiveMessage: (messageId: number) => void;
+  DeleteText: (messageId: number) => void;
 }
 
 const initialMode: Mode = "text";
@@ -32,11 +33,13 @@ export const useText = create<useTextTypes>()(
         set((state) => ({
           activeMessage: state.messages.find((item) => item.id === messageId),
         })),
-
-      // increasePopulation: () => set((state) => ({ bears: state.bears + 1 })),
-
-      // removeAllBears: () => set({ bears: 0 }),
-      // updateBears: (newBears) => set({ bears: newBears }),
+      DeleteText: (messageId) =>
+        set((state) => ({
+          activeMessage: undefined,
+          messages: state.messages.find((m) => m.id === messageId)
+            ? state.messages.filter((m) => m.id !== messageId)
+            : state.messages,
+        })),
     }),
     {
       name: "ai-text-translator", // name of the item in the storage (must be unique)
