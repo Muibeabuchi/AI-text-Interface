@@ -13,7 +13,7 @@ export function ToggleTheme() {
   const { setTheme, theme } = useTheme();
 
   return (
-    <div className="flex items-center justify-between gap-2 p-1.5 border rounded-full shadow-sm border-input bg-background ">
+    <div className="flex items-center justify-between gap-2 p-1.5 border rounded-xl lg:rounded-full shadow-sm border-input bg-background ">
       <Button
         variant="ghost"
         className={cn(`w-1 h-1 p-4 rounded-full`, {

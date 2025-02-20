@@ -22,19 +22,20 @@ function App() {
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-2">
               <AppIcon />
-              <h1 className="text-2xl font-cursive text-primary">
+              <h1 className="lg:text-2xl text-sm font-cursive text-primary">
                 AI Translator
               </h1>
             </div>
-            <div className="flex gap-2 h-[45.7955px] items-stretch">
+            <div className="flex gap-2 h-[37px] lg:h-[45.7955px] items-stretch">
               <ToggleTheme />
               <Button
                 variant="outline"
                 onClick={() => setSheetOpen(true)}
-                className="h-full gap-2 rounded-full hover-shadow "
+                className="h-full gap-2 lg:rounded-full py-1 px-3 lg:p-2 rounded-xl  hover-shadow "
               >
                 <PanelRightOpen className="w-4 h-4" />
-                View Summaries
+
+                <span className="hidden lg:block"> View Summaries</span>
               </Button>
             </div>
           </div>
