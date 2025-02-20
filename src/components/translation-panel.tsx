@@ -39,8 +39,8 @@ import {
   SelectValue,
 } from "./ui/select";
 import { useLanguageDetect } from "@/hooks/UseLanguageDetect";
-import { EmptyStateIllustration } from "./empty-state-illustration";
-import EmptyTextSkeleton from "./empty-text-skeleton";
+import LoadingSkeleton from "./empty-text-skeleton";
+// import { EmptyStateIllustration } from "./empty-state-illustration";
 // import { EmptyStateIllustration } from "./empty-state-illustration";
 // import { DeviceErrorIllustration } from "./error-state-illustration";
 
@@ -173,12 +173,12 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
         className="w-full "
       >
         <div className="sticky top-0 z-10 bg-card border-primary">
-          <div className="flex items-center justify-center w-full h-[50px] gap-2 p-2 border-b rounded-none border-primary bg-muted">
+          <div className="flex items-center justify-between  lg:justify-center w-full h-[50px] gap-2 p-2 border-b rounded-none border-primary bg-muted">
             <div
               role="button"
               onClick={() => handleMode("text")}
               className={cn(
-                " rounded-sm py-0.5 px-5 hover-shadow hover:bg-accent/80 flex items-center justify-center  h-full hover:text-primary-foreground text-sm",
+                " rounded-sm py-0.5 lg:px-5 px-2 hover-shadow hover:bg-accent/80 flex items-center justify-center  h-full hover:text-primary-foreground text-sm",
                 {
                   "bg-accent text-primary-foreground": mode === "text",
                 }
@@ -193,7 +193,7 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
                   role="button"
                   // onClick={() => handleMode("translation")}
                   className={cn(
-                    "flex items-center justify-between gap-4 rounded-sm py-0.5 px-5 hover-shadow text-sm hover:bg-accent/80 hover:text-primary-foreground ",
+                    "flex items-center justify-between gap-4 rounded-sm py-0.5 lg:px-5 px-2 hover-shadow text-sm hover:bg-accent/80 hover:text-primary-foreground ",
                     {
                       "bg-accent text-primary-foreground shadow-sm":
                         mode === "translation",
@@ -228,7 +228,7 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
               role="button"
               onClick={() => handleMode("summary")}
               className={cn(
-                " rounded-sm py-0.5 px-5 hover:bg-accent/80 h-full flex items-center justify-center hover:text-primary-foreground  hover-shadow text-sm",
+                " rounded-sm py-0.5 lg:px-5 px-2 hover:bg-accent/80 h-full flex items-center justify-center hover:text-primary-foreground  hover-shadow text-sm",
                 {
                   "bg-accent text-primary-foreground ": mode === "summary",
                 }
@@ -242,7 +242,7 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
         {/* OUTPUT BOX */}
         <section className="flex flex-col p-4 m-0 gap-y-3">
           <div className="relative min-h-[300px] rounded-md border border-primary bg-background">
-            <EmptyTextSkeleton />
+            <LoadingSkeleton />
             {/* {loading ? ( */}
             {/* ) : error ? (
               <div className="flex items-center gap-2 p-4 text-destructive">
