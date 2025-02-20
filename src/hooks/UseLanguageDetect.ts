@@ -1,11 +1,7 @@
-import { Message } from "@/types";
-// import { Message } from "@/types";
-import { Dispatch, SetStateAction, useCallback } from "react";
-import { useText } from "./useText";
+import { useCallback } from "react";
 import { toast } from "sonner";
 
 export function useLanguageDetect() {
-  // const addMessage = useText((text) => text.addMessage);
   const languageTagToHumanReadable = useCallback(
     (languageTag: string, targetLanguage: string) => {
       const displayNames = new Intl.DisplayNames([targetLanguage], {
@@ -17,10 +13,10 @@ export function useLanguageDetect() {
   );
 
   const googleAi = useCallback(async (inputText: string) => {
-    if ("ai" in self && "languageDetector" in self.ai) {
+    if ("ai" in self && "languageDetector" in window.self.ai) {
       // The Language Detector API is available.
       const languageDetectorCapabilities =
-        await self.ai.languageDetector.capabilities();
+        await window.self.ai.languageDetector.capabilities();
       const canDetect = languageDetectorCapabilities.capabilities;
 
       let detector: Promise<unknown> | (() => Promise<unknown>);
@@ -30,11 +26,11 @@ export function useLanguageDetect() {
         return;
       }
       if (canDetect === "readily") {
-        detector = await self.ai.languageDetector.create();
+        detector = await window.self.ai.languageDetector.create();
         toast.success("The language detector can immediately be used");
       } else {
         // The language detector can be used after model download.
-        detector = await self.ai.languageDetector.create({
+        detector = await window.self.ai.languageDetector.create({
           monitor(m) {
             m.addEventListener("downloadprogress", (e) => {
               console.log(`Downloaded ${e.loaded} of ${e.total} bytes.`);
@@ -64,16 +60,6 @@ export function useLanguageDetect() {
       toast.error(`This device is not compatible with browser feature`);
     }
   }, []);
-
-  // const readableLanguage = languageTagToHumanReadable(
-  //   detectedLanguage[0].detectedLanguage,
-  //   "en"
-  // );
-  // if (!readableLanguage) throw new Error("failed to detetct a language");
-
-  // const handleSend = useCallback(async () => {
-
-  // }, [googleAi, inputText, setInputText, setProcessing, setMessages]);
 
   return { googleAi, languageTagToHumanReadable };
 }
