@@ -99,6 +99,7 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
 
   const handleDelete = () => {
     if (!activeMessage) return;
+    if (!activeMessage.summary) return;
     if (mode === "text") {
       deleteText(activeMessage.id);
     } else if (mode == "summary") {
@@ -174,6 +175,19 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
     return inputText.trim().split(/\s+/).length;
   }, [inputText]);
 
+  const showDropdown = () => {
+    if (!activeMessage) return false;
+    if (mode === "text") {
+      if (activeMessage.text) return true;
+    }
+    if (mode === "summary") {
+      if (activeMessage.summary) return true;
+      if (!activeMessage.summary) return false;
+    }
+    return false;
+    //  (activeMessage.text || !activeMessage.summary)};
+  };
+
   return (
     <div className="space-y-4 overflow-hidden border rounded-lg animate-in fade-in-50 border-primary bg-card shadow-soft">
       <section
@@ -198,21 +212,29 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
             </div>
 
             <DropdownMenu>
-              <DropdownMenuTrigger asChild>
+              <DropdownMenuTrigger
+                disabled={!activeMessage}
+                className="disabled:cursor-not-allowed"
+                asChild
+              >
                 <div
                   role="button"
                   // onClick={() => handleMode("translation")}
                   className={cn(
-                    "flex items-center justify-between gap-4 rounded-sm py-0.5 lg:px-5 px-2 hover-shadow text-sm hover:bg-accent/80 hover:text-primary-foreground ",
+                    "flex items-center justify-between disabled:cursor-not-allowed gap-4 rounded-sm py-0.5 lg:px-5 px-2 hover-shadow text-sm hover:bg-accent/80 hover:text-primary-foreground ",
                     {
                       "bg-accent text-primary-foreground shadow-sm":
                         mode === "translation",
+                      " hover:shadow-none text-black cursor-not-allowed dark:text-inherit ":
+                        !activeMessage,
                     }
                   )}
                 >
                   {
                     // if language is detected  then show the detected language here
-                    "TRANSLATIONS"
+                    activeMessage
+                      ? activeMessage.readableLanguage
+                      : "TRANSLATIONS"
                   }
 
                   <ChevronDown />
@@ -265,9 +287,15 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
             ) : (
               <div className="p-4 min-h-[200px]">
                 {activeMessage ? (
-                  <p>{activeMessage.text}</p>
+                  mode === "text" ? (
+                    <p>{activeMessage.text}</p>
+                  ) : mode === "summary" && activeMessage.summary ? (
+                    <p>{activeMessage.summary}</p>
+                  ) : (
+                    <EmptyStateIllustration mode={mode} />
+                  )
                 ) : (
-                  <EmptyStateIllustration />
+                  <EmptyStateIllustration mode={mode} />
                 )}
                 {/* {detectedLanguage && (
                   <p className="text-sm text-muted-foreground">
@@ -296,16 +324,6 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
                       side="top"
                       className="w-48"
                     >
-                      {/* <DropdownMenuItem
-                        onClick={() => {
-                          setInputText("");
-                          // setShowFileUpload(true);
-                        }}
-                      >
-                        <X className="w-4 h-4 mr-2" />
-                        Clear Text
-                      </DropdownMenuItem> */}
-
                       <DropdownMenuItem>
                         <RotateCw className="w-4 h-4 mr-2" />
                         Re-translate
@@ -314,10 +332,12 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
                         <Type className="w-4 h-4 mr-2" />
                         Summarize
                       </DropdownMenuItem>
-                      <DropdownMenuItem onClick={handleDelete}>
-                        <Trash className="w-4 h-4 mr-2" />
-                        {mode === "text" ? "Delete Text" : "Delete Summary"}
-                      </DropdownMenuItem>
+                      {showDropdown() ? (
+                        <DropdownMenuItem onClick={handleDelete}>
+                          <Trash className="w-4 h-4 mr-2" />
+                          {mode === "text" ? "Delete Text" : "Delete Summary"}
+                        </DropdownMenuItem>
+                      ) : null}
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TooltipTrigger>

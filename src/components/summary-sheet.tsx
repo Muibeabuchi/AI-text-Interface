@@ -21,8 +21,8 @@ export function SummarySheet({ open, onOpenChange }: SummarySheetProps) {
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="w-[400px] sm:w-[540px] bg-card">
         <SheetHeader>
-          <SheetTitle className="text-2xl text-primary font-cursive">
-            Summaries
+          <SheetTitle className="text-base lg:text-2xl text-primary font-cursive">
+            Your Texts & Summaries
           </SheetTitle>
         </SheetHeader>
         <ScrollArea className="h-[calc(100vh-8rem)] mt-6 pr-4">
@@ -33,7 +33,10 @@ export function SummarySheet({ open, onOpenChange }: SummarySheetProps) {
                   key={m.id}
                   variant="outline"
                   className="items-start justify-start w-full h-24 p-4 transition-colors rounded-lg hover:bg-muted border-primary"
-                  onClick={() => setActiveMessage(m.id)}
+                  onClick={() => {
+                    onOpenChange(false);
+                    setActiveMessage(m.id);
+                  }}
                 >
                   {m.readableLanguage}
 

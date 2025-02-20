@@ -18,7 +18,7 @@ const initialMode: Mode = "text";
 
 export const useText = create<useTextTypes>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       mode: initialMode,
       setMode: (mode) =>
         set((state) => ({
@@ -34,6 +34,7 @@ export const useText = create<useTextTypes>()(
       setActiveMessage: (messageId) =>
         set((state) => ({
           activeMessage: state.messages.find((item) => item.id === messageId),
+          mode: "text",
         })),
       DeleteText: (messageId) =>
         set((state) => ({
@@ -49,6 +50,10 @@ export const useText = create<useTextTypes>()(
                 m.id === messageId ? { ...m, summary: undefined } : m
               )
             : state.messages,
+          activeMessage: state.activeMessage
+            ? (state.activeMessage.summary = undefined)
+            : undefined,
+          mode: "text",
         })),
     }),
     {

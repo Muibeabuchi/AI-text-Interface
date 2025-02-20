@@ -1,6 +1,7 @@
+import { Mode } from "@/types";
 import { useTheme } from "next-themes";
 
-export function EmptyStateIllustration() {
+export function EmptyStateIllustration({ mode }: { mode: Mode }) {
   const { theme } = useTheme();
   const isDark = theme === "dark";
 
@@ -43,7 +44,7 @@ export function EmptyStateIllustration() {
         />
       </svg>
       <p className="text-lg font-medium text-center text-foreground">
-        No text to display yet
+        No {mode.toUpperCase()} to display yet
       </p>
       <p className="mt-2 text-sm text-center text-muted-foreground">
         Start by entering some text or uploading a file

@@ -25,10 +25,11 @@ export function UseTranslator() {
     // console.log("text to translated", textToBeTranslated);
     try {
       handleTranslationState(messageId, true);
-      if ("ai" in self && "translator" in self.ai) {
+      if ("ai" in self && "translator" in window.self.ai) {
         // The Translator API is supported.
 
-        const translatorCapabilities = await self.ai.translator.capabilities();
+        const translatorCapabilities =
+          await window.self.ai.translator.capabilities();
         const canTranslate: AiCapabilitiesTypes =
           translatorCapabilities.languagePairAvailable(
             targetlanguage,
@@ -42,7 +43,7 @@ export function UseTranslator() {
           handleTranslationError(messageId, true);
         }
         if (canTranslate === "readily") {
-          translator = await self.ai.translator.create({
+          translator = await window.self.ai.translator.create({
             sourceLanguage: currentLanguage,
             targetLanguage: targetlanguage,
           });
@@ -50,7 +51,7 @@ export function UseTranslator() {
         } else {
           console.log("i am in the after download execution block");
 
-          translator = await self.ai.translator.create({
+          translator = await window.self.ai.translator.create({
             sourceLanguage: currentLanguage,
             targetLanguage: targetlanguage,
             monitor(m) {
