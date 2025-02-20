@@ -67,6 +67,7 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
   const handleMode = useText((state) => state.setMode);
   const addMessage = useText((state) => state.addMessage);
   const activeMessage = useText((state) => state.activeMessage);
+  const deleteText = useText((state) => state.DeleteText);
 
   const { googleAi, languageTagToHumanReadable } = useLanguageDetect();
 
@@ -95,6 +96,11 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
     if (mode === "summary") {
       // logic for summarizing text
     }
+  };
+
+  const handleDeleteText = () => {
+    if (!activeMessage) return;
+    deleteText(activeMessage.id);
   };
 
   async function addText() {
@@ -283,7 +289,7 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
                       side="top"
                       className="w-48"
                     >
-                      <DropdownMenuItem
+                      {/* <DropdownMenuItem
                         onClick={() => {
                           setInputText("");
                           // setShowFileUpload(true);
@@ -291,7 +297,7 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
                       >
                         <X className="w-4 h-4 mr-2" />
                         Clear Text
-                      </DropdownMenuItem>
+                      </DropdownMenuItem> */}
 
                       <DropdownMenuItem>
                         <RotateCw className="w-4 h-4 mr-2" />
@@ -301,7 +307,7 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
                         <Type className="w-4 h-4 mr-2" />
                         Summarize
                       </DropdownMenuItem>
-                      <DropdownMenuItem>
+                      <DropdownMenuItem onClick={handleDeleteText}>
                         <Trash className="w-4 h-4 mr-2" /> Delete Text
                       </DropdownMenuItem>
                     </DropdownMenuContent>
@@ -314,7 +320,7 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
             </TooltipProvider>
           </div>
 
-          <div className="relative flex  w-full  h-full gap-3 mt-4  ">
+          <div className="relative flex w-full h-full gap-3 mt-4 ">
             {/* {showFileUpload && !inputText ? (
             ) : ( */}
             {mode === "translation" ? null : (
@@ -329,7 +335,7 @@ export function TranslationPanel({ onSummarize }: TranslationPanelProps) {
                   onChange={(e) => {
                     setInputText(e.target.value);
                   }}
-                  className="w-full h-full items-stretch   rounded-md placeholder:text-darkgreen/50 resize-none bg-background border-primary"
+                  className="items-stretch w-full h-full rounded-md resize-none placeholder:text-darkgreen/50 bg-background border-primary"
                 />
 
                 <FileUpload
